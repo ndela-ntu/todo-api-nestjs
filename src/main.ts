@@ -3,13 +3,17 @@ import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './common/filters/prisma-client-exception.filter';
 import { CustomValidationPipe } from './common/pipes/validation.pipe';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { ExecutionContext, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
-import { Observable } from 'rxjs';
-import { IS_PUBLIC_KEY } from './common/decorators/public.decorator';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const config = new DocumentBuilder().setTitle('Todo API').setDescription("API endpoints for todo application").setVersion("1.0").addTag("Todo").build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
 
   app.useGlobalPipes(
     new CustomValidationPipe(),
