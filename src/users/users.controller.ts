@@ -32,7 +32,6 @@ import {
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -48,12 +47,13 @@ export class UsersController {
   }
 
   @ApiOperation({
-    summary: 'Get all users',
+    summary: 'Get all users (Admin only)',
     description: "Admins can fetch all users. Regular users can't",
   })
   @Get()
   @Roles(UserRole.ADMIN)
   async findAll() {
+    console.log('Getting all users');
     return this.usersService.findAll();
   }
 
@@ -84,7 +84,8 @@ export class UsersController {
 
   @ApiOperation({
     summary: 'Update your own profile',
-    description: 'Allows authenticated users to update their own profile information.',
+    description:
+      'Allows authenticated users to update their own profile information.',
   })
   @ApiBody({
     type: UpdateUserDto,
@@ -99,13 +100,14 @@ export class UsersController {
 
   @ApiOperation({
     summary: 'Update any user (Admin only)',
-    description: 'Allows administrators to update any user profile by specifying the user ID.',
+    description:
+      'Allows administrators to update any user profile by specifying the user ID.',
   })
-  @ApiParam({ 
-    name: 'id', 
-    type: String, 
+  @ApiParam({
+    name: 'id',
+    type: String,
     description: 'ID of the user to update',
-    example: '123e4567-e89b-12d3-a456-426614174000'
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @ApiBody({ type: UpdateUserDto })
   @Patch(':id')
@@ -118,13 +120,14 @@ export class UsersController {
 
   @ApiOperation({
     summary: 'Delete a user (Admin only)',
-    description: 'Permanently deletes a user account. Requires admin privileges.',
+    description:
+      'Permanently deletes a user account. Requires admin privileges.',
   })
   @ApiParam({
     name: 'id',
     type: String,
     description: 'ID of the user to delete',
-    example: '123e4567-e89b-12d3-a456-426614174000'
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @Delete(':id')
   @Roles(UserRole.ADMIN)

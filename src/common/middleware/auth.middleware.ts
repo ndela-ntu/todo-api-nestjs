@@ -12,10 +12,12 @@ export class AuthMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     const token = this.extractTokenFromHeader(req);
+    console.log(process.env.JWT_SECRET);
 
     if (token) {
       try {
         const payload = this.jwtService.verify(token);
+
         const user = await this.prisma.user.findUnique({
           where: { id: payload.sub },
           select: {

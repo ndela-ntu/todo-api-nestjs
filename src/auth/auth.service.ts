@@ -85,6 +85,8 @@ export class AuthService {
   }
 
   async validateUser(userId: string) {
+    console.log('Looking for user ID:', userId); 
+
     return this.prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -100,6 +102,6 @@ export class AuthService {
 
   private generateToken(userId: string, email: string, role: UserRole) {
     const payload = { sub: userId, email, role };
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, {expiresIn: '24h'});
   }
 }

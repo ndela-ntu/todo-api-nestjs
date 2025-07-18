@@ -3,13 +3,14 @@ import {
   Module,
   NestModule,
   RequestMethod,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { TodosModule } from './todos/todos.module';
 import { AuthModule } from './auth/auth.module';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -18,6 +19,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { PrismaClientExceptionFilter } from './common/filters/prisma-client-exception.filter';
 import { AuthMiddleware } from './common/middleware/auth.middleware';
 import { RequestLoggerMiddleware } from './common/middleware/request-logger.middleware';
+import { CustomValidationPipe } from './common/pipes/validation.pipe';
 
 @Module({
   imports: [
@@ -28,6 +30,14 @@ import { RequestLoggerMiddleware } from './common/middleware/request-logger.midd
     TodosModule,
   ],
   providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: CustomValidationPipe,
+    },
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

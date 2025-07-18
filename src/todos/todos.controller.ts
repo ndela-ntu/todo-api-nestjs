@@ -25,7 +25,6 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags } fro
 @ApiTags('todos')
 @ApiBearerAuth()
 @Controller('todos')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
